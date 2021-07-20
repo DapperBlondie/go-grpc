@@ -7,10 +7,43 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"strconv"
+	"time"
 )
 
 // GreetService our structure that implemented our rpc
 type GreetService struct{}
+
+type SumService struct{}
+
+func (ss *SumService) GetSumResult(ctx context.Context, r *files.SumRequest) (*files.SumResponse, error) {
+	input := r.GetList()
+	var result int32 = 0
+	for _, num := range input {
+		result += num
+	}
+	resp := &files.SumResponse{Result: result}
+
+	return resp, nil
+}
+
+// GreetManyTimes use for stream many greet to our client
+func (gs *GreetService) GreetManyTimes(r *files.GreetingManyTimeRequest, stream files.GreetService_GreetManyTimesServer) error {
+	firstName := r.GetGreeting().GetFirstName()
+	lastName := r.GetGreeting().GetLastName()
+
+	result := firstName + " : " + lastName
+	for i := 0; i < 10; i += 1 {
+		result += " number " + strconv.Itoa(i) + "\n"
+		resp := &files.GreetingManyTimesResponse{Result: result}
+		err := stream.Send(resp)
+		if err != nil {
+			return err
+		}
+		time.Sleep(time.Millisecond * 500)
+	}
+	return nil
+}
 
 //Greet our Greeting API just have on rpc service that we implemented that
 func (gs *GreetService) Greet(ctx context.Context, r *files.GreetingRequest) (*files.GreetingResponse, error) {
@@ -44,6 +77,7 @@ func runServer() error {
 
 	srv := grpc.NewServer()
 	files.RegisterGreetServiceServer(srv, &GreetService{})
+	files.RegisterSumServiceServer(srv, &SumService{})
 
 	log.Println("rpc Server listening on localhost:50051 ...")
 	err = srv.Serve(listener)

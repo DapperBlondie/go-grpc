@@ -1,0 +1,17 @@
+syntax="proto3";
+
+package sum;
+
+option go_package="messages/files";
+
+message SumRequest {
+  repeated int32 list=1;
+}
+
+message SumResponse {
+  int32 result=1;
+}
+
+service SumService {
+  rpc GetSumResult(SumRequest) returns (SumResponse) {};
+}
