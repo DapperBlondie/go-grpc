@@ -10,7 +10,7 @@ import (
 )
 
 // GreetService our structure that implemented our rpc
-type GreetService struct {}
+type GreetService struct{}
 
 //Greet our Greeting API just have on rpc service that we implemented that
 func (gs *GreetService) Greet(ctx context.Context, r *files.GreetingRequest) (*files.GreetingResponse, error) {
@@ -24,7 +24,7 @@ func (gs *GreetService) Greet(ctx context.Context, r *files.GreetingRequest) (*f
 	return resp, nil
 }
 
-func main()  {
+func main() {
 	err := runServer()
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -54,4 +54,3 @@ func runServer() error {
 
 	return nil
 }
-
