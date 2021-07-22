@@ -16,6 +16,23 @@ type GreetService struct{}
 
 type SumService struct{}
 
+func (ss *SumService) GetStreamingSumResult(r *files.SumRequest, stream files.SumService_GetStreamingSumResultServer) error {
+	lst := r.GetList()
+	var number int32 = 0
+	for _, value := range lst {
+		number += value
+		resp := &files.SumResponse{Result: number}
+		err := stream.Send(resp)
+		if err != nil {
+			return err
+		}
+		time.Sleep(time.Millisecond * 300)
+	}
+
+	return nil
+}
+
+// GetSumResult use for computing the sum of the repeated values from our request
 func (ss *SumService) GetSumResult(ctx context.Context, r *files.SumRequest) (*files.SumResponse, error) {
 	input := r.GetList()
 	var result int32 = 0

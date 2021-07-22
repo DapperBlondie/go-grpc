@@ -35,6 +35,7 @@ func runClient() error {
 	unaryGreeting(client)
 	unarySum(sumClient)
 	serverStreamingGreeting(client)
+	serverStreamingSum(sumClient)
 
 	return nil
 }
@@ -48,6 +49,29 @@ func unarySum(client files.SumServiceClient) {
 	}
 	fmt.Println(strconv.Itoa(int(resp.Result)) + ", result of our sum request.")
 	return
+}
+
+func serverStreamingSum(client files.SumServiceClient) {
+	req := &files.SumRequest{List: []int32{12, 56, 89, 90, 772, 8761}}
+	stream, err := client.GetStreamingSumResult(context.Background(), req)
+	if err != nil {
+		log.Println("Error in streaming : " + err.Error())
+		return
+	}
+
+	fmt.Println("Result of sum streaming : ")
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			log.Println("Error occurred in streaming : " + err.Error())
+			return
+		} else if err != nil {
+			log.Println("Error occurred in streaming : " + err.Error())
+			return
+		} else {
+			fmt.Println(resp.GetResult())
+		}
+	}
 }
 
 func serverStreamingGreeting(client files.GreetServiceClient) {

@@ -126,13 +126,17 @@ var file_sum_proto_rawDesc = []byte{
 	0x0a, 0x04, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x05, 0x52, 0x04, 0x6c, 0x69,
 	0x73, 0x74, 0x22, 0x25, 0x0a, 0x0b, 0x53, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
 	0x65, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x05, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x32, 0x41, 0x0a, 0x0a, 0x53, 0x75, 0x6d,
-	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x33, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x53, 0x75,
-	0x6d, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x0f, 0x2e, 0x73, 0x75, 0x6d, 0x2e, 0x53, 0x75,
-	0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x10, 0x2e, 0x73, 0x75, 0x6d, 0x2e, 0x53,
-	0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x10, 0x5a, 0x0e,
-	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x2f, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x05, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x32, 0x81, 0x01, 0x0a, 0x0a, 0x53, 0x75,
+	0x6d, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x33, 0x0a, 0x0c, 0x47, 0x65, 0x74, 0x53,
+	0x75, 0x6d, 0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x0f, 0x2e, 0x73, 0x75, 0x6d, 0x2e, 0x53,
+	0x75, 0x6d, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x10, 0x2e, 0x73, 0x75, 0x6d, 0x2e,
+	0x53, 0x75, 0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3e, 0x0a,
+	0x15, 0x47, 0x65, 0x74, 0x53, 0x74, 0x72, 0x65, 0x61, 0x6d, 0x69, 0x6e, 0x67, 0x53, 0x75, 0x6d,
+	0x52, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x12, 0x0f, 0x2e, 0x73, 0x75, 0x6d, 0x2e, 0x53, 0x75, 0x6d,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x10, 0x2e, 0x73, 0x75, 0x6d, 0x2e, 0x53, 0x75,
+	0x6d, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x42, 0x10, 0x5a,
+	0x0e, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x2f, 0x66, 0x69, 0x6c, 0x65, 0x73, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -154,9 +158,11 @@ var file_sum_proto_goTypes = []interface{}{
 }
 var file_sum_proto_depIdxs = []int32{
 	0, // 0: sum.SumService.GetSumResult:input_type -> sum.SumRequest
-	1, // 1: sum.SumService.GetSumResult:output_type -> sum.SumResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	0, // 1: sum.SumService.GetStreamingSumResult:input_type -> sum.SumRequest
+	1, // 2: sum.SumService.GetSumResult:output_type -> sum.SumResponse
+	1, // 3: sum.SumService.GetStreamingSumResult:output_type -> sum.SumResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -226,6 +232,7 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type SumServiceClient interface {
 	GetSumResult(ctx context.Context, in *SumRequest, opts ...grpc.CallOption) (*SumResponse, error)
+	GetStreamingSumResult(ctx context.Context, in *SumRequest, opts ...grpc.CallOption) (SumService_GetStreamingSumResultClient, error)
 }
 
 type sumServiceClient struct {
@@ -245,9 +252,42 @@ func (c *sumServiceClient) GetSumResult(ctx context.Context, in *SumRequest, opt
 	return out, nil
 }
 
+func (c *sumServiceClient) GetStreamingSumResult(ctx context.Context, in *SumRequest, opts ...grpc.CallOption) (SumService_GetStreamingSumResultClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_SumService_serviceDesc.Streams[0], "/sum.SumService/GetStreamingSumResult", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &sumServiceGetStreamingSumResultClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type SumService_GetStreamingSumResultClient interface {
+	Recv() (*SumResponse, error)
+	grpc.ClientStream
+}
+
+type sumServiceGetStreamingSumResultClient struct {
+	grpc.ClientStream
+}
+
+func (x *sumServiceGetStreamingSumResultClient) Recv() (*SumResponse, error) {
+	m := new(SumResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // SumServiceServer is the server API for SumService service.
 type SumServiceServer interface {
 	GetSumResult(context.Context, *SumRequest) (*SumResponse, error)
+	GetStreamingSumResult(*SumRequest, SumService_GetStreamingSumResultServer) error
 }
 
 // UnimplementedSumServiceServer can be embedded to have forward compatible implementations.
@@ -256,6 +296,9 @@ type UnimplementedSumServiceServer struct {
 
 func (*UnimplementedSumServiceServer) GetSumResult(context.Context, *SumRequest) (*SumResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSumResult not implemented")
+}
+func (*UnimplementedSumServiceServer) GetStreamingSumResult(*SumRequest, SumService_GetStreamingSumResultServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetStreamingSumResult not implemented")
 }
 
 func RegisterSumServiceServer(s *grpc.Server, srv SumServiceServer) {
@@ -280,6 +323,27 @@ func _SumService_GetSumResult_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SumService_GetStreamingSumResult_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(SumRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(SumServiceServer).GetStreamingSumResult(m, &sumServiceGetStreamingSumResultServer{stream})
+}
+
+type SumService_GetStreamingSumResultServer interface {
+	Send(*SumResponse) error
+	grpc.ServerStream
+}
+
+type sumServiceGetStreamingSumResultServer struct {
+	grpc.ServerStream
+}
+
+func (x *sumServiceGetStreamingSumResultServer) Send(m *SumResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 var _SumService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sum.SumService",
 	HandlerType: (*SumServiceServer)(nil),
@@ -289,6 +353,12 @@ var _SumService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _SumService_GetSumResult_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetStreamingSumResult",
+			Handler:       _SumService_GetStreamingSumResult_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "sum.proto",
 }
