@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"strconv"
+	"time"
 )
 
 // This file is our unary client that we are using it for our unary Greeting API
@@ -36,6 +37,7 @@ func runClient() error {
 	unarySum(sumClient)
 	serverStreamingGreeting(client)
 	serverStreamingSum(sumClient)
+	clientStreamingGreeting(client)
 
 	return nil
 }
@@ -98,6 +100,35 @@ func serverStreamingGreeting(client files.GreetServiceClient) {
 			fmt.Println(msg.Result)
 		}
 	}
+	return
+}
+
+func clientStreamingGreeting(client files.GreetServiceClient) {
+	stream, err := client.LongGreet(context.Background())
+	if err != nil {
+		return
+	}
+
+	for {
+		req := &files.LongGreetRequest{Greeting: &files.Greeting{
+			FirstName: "Alireza",
+			LastName:  "Gharib",
+		}}
+
+		err := stream.Send(req)
+		if err != nil {
+			log.Println("Error in send msg : " + err.Error())
+			break
+		}
+		time.Sleep(time.Millisecond * 200)
+	}
+
+	resp, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Println("Error in receiving the response : " + err.Error())
+		return
+	}
+	fmt.Println(resp.GetResult())
 	return
 }
 

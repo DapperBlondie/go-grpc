@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/DapperBlondie/go-grpc/src/messages/files"
 	"google.golang.org/grpc"
+	"io"
 	"log"
 	"net"
 	"strconv"
@@ -16,6 +17,26 @@ type GreetService struct{}
 
 type SumService struct{}
 
+// LongGreet use for getting long greet then will send the number of greeting
+func (gs *GreetService) LongGreet(stream files.GreetService_LongGreetServer) error {
+	var counter int = 0
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			log.Println("Error in LongGreet service : " + err.Error())
+			resp := &files.LongGreetResponse{Result: req.GetGreeting().FirstName + ", Hello : " + strconv.Itoa(counter)}
+			err = stream.SendAndClose(resp)
+			return err
+		} else if err != nil {
+			log.Println("Error in LongGreet service : " + err.Error())
+			return err
+		} else {
+			counter += 1
+		}
+	}
+}
+
+// GetStreamingSumResult send the result of the stream of the repeated data
 func (ss *SumService) GetStreamingSumResult(r *files.SumRequest, stream files.SumService_GetStreamingSumResultServer) error {
 	lst := r.GetList()
 	var number int32 = 0
