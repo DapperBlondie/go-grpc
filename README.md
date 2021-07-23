@@ -1,2 +1,7 @@
 # go-grpc
- golang grpc demo applications
+An application with gRPC client and server.
+
+# GreetService
+
+
+# SumService
