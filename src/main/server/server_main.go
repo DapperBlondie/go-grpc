@@ -17,20 +17,44 @@ type GreetService struct{}
 
 type SumService struct{}
 
+// AverageStreamingResult use for computing average of int32 client streaming
+func (ss *SumService) AverageStreamingResult(stream files.SumService_AverageStreamingResultServer) error {
+	var counter int32 = 0.0
+	var sum int32 = 0
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			log.Println("Error in getting the request in Average Stream : " + err.Error())
+			resp := &files.AverageResultResponse{Average: float32(sum) / float32(counter)}
+			err := stream.SendAndClose(resp)
+			//log.Println("Error in Average Streaming : " + err.Error()) // Daemon statement
+			return err
+		} else if err != nil {
+			log.Println("Error in Average Streaming : " + err.Error())
+			return err
+		} else {
+			sum += req.GetNum()
+			counter += 1
+		}
+	}
+}
+
 // LongGreet use for getting long greet then will send the number of greeting
 func (gs *GreetService) LongGreet(stream files.GreetService_LongGreetServer) error {
 	var counter int = 0
+	var name string = ""
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
 			log.Println("Error in LongGreet service : " + err.Error())
-			resp := &files.LongGreetResponse{Result: req.GetGreeting().FirstName + ", Hello : " + strconv.Itoa(counter)}
-			err = stream.SendAndClose(resp)
+			resp := &files.LongGreetResponse{Result: name + ", Hello : " + strconv.Itoa(counter)}
+			err := stream.SendAndClose(resp)
 			return err
 		} else if err != nil {
-			log.Println("Error in LongGreet service : " + err.Error())
+			//log.Println("Error in LongGreet service : " + err.Error())
 			return err
 		} else {
+			name = req.GetGreeting().GetFirstName()
 			counter += 1
 		}
 	}

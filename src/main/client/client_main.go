@@ -38,6 +38,7 @@ func runClient() error {
 	serverStreamingGreeting(client)
 	serverStreamingSum(sumClient)
 	clientStreamingGreeting(client)
+	clientStreamingAverage(sumClient)
 
 	return nil
 }
@@ -76,6 +77,34 @@ func serverStreamingSum(client files.SumServiceClient) {
 	}
 }
 
+func clientStreamingAverage(client files.SumServiceClient) {
+	stream, err := client.AverageStreamingResult(context.Background())
+	if err != nil {
+		log.Println("Error in getting the Average Stream : " + err.Error())
+		return
+	}
+
+	req := &files.NumberRequest{Num: 10}
+
+	for j := 0; j < 10; j += 1 {
+		err = stream.Send(req)
+		if err != nil {
+			log.Println("Error in client sending average : " + err.Error())
+			return
+		}
+		time.Sleep(time.Millisecond * 200)
+	}
+
+	resp, err := stream.CloseAndRecv()
+	if err != nil {
+		log.Println("Error in receiving response in average : " + err.Error())
+		return
+	}
+
+	fmt.Printf("Average of streaming : %f\n", resp.GetAverage())
+	return
+}
+
 func serverStreamingGreeting(client files.GreetServiceClient) {
 	req := &files.GreetingManyTimeRequest{Greeting: &files.Greeting{
 		FirstName: "Johnny",
@@ -106,15 +135,16 @@ func serverStreamingGreeting(client files.GreetServiceClient) {
 func clientStreamingGreeting(client files.GreetServiceClient) {
 	stream, err := client.LongGreet(context.Background())
 	if err != nil {
+		log.Println("Error in greeting client streaming : " + err.Error())
 		return
 	}
 
-	for {
-		req := &files.LongGreetRequest{Greeting: &files.Greeting{
-			FirstName: "Alireza",
-			LastName:  "Gharib",
-		}}
+	req := &files.LongGreetRequest{Greeting: &files.Greeting{
+		FirstName: "Alireza",
+		LastName:  "Gharib",
+	}}
 
+	for j := 0; j < 10; j += 1 {
 		err := stream.Send(req)
 		if err != nil {
 			log.Println("Error in send msg : " + err.Error())

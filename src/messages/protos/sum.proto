@@ -12,7 +12,16 @@ message SumResponse {
   int32 result=1;
 }
 
+message NumberRequest {
+  int32 num=1;
+}
+
+message AverageResultResponse {
+  float average=1;
+}
+
 service SumService {
   rpc GetSumResult(SumRequest) returns (SumResponse) {};
   rpc GetStreamingSumResult(SumRequest) returns (stream SumResponse) {};
+  rpc AverageStreamingResult(stream NumberRequest) returns (AverageResultResponse) {};
 }
