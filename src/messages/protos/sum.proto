@@ -20,8 +20,17 @@ message AverageResultResponse {
   float average=1;
 }
 
+message NumReq {
+  int32 req_num=1;
+}
+
+message NumResp {
+  string resp_num=1;
+}
+
 service SumService {
   rpc GetSumResult(SumRequest) returns (SumResponse) {};
   rpc GetStreamingSumResult(SumRequest) returns (stream SumResponse) {};
   rpc AverageStreamingResult(stream NumberRequest) returns (AverageResultResponse) {};
+  rpc EvenOrOdd(stream NumReq) returns (stream NumResp) {};
 }

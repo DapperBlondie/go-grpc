@@ -40,6 +40,7 @@ func runClient() error {
 	clientStreamingGreeting(client)
 	clientStreamingAverage(sumClient)
 	biDirectionalGreetStreaming(client)
+	evenOrOddStreaming(sumClient)
 
 	return nil
 }
@@ -208,6 +209,7 @@ func biDirectionalGreetStreaming(client files.GreetServiceClient) {
 				log.Println("Error in sending request : " + err.Error())
 				continue
 			}
+			time.Sleep(time.Millisecond * 200)
 		}
 		err := stream.CloseSend()
 		if err != nil {
@@ -220,12 +222,13 @@ func biDirectionalGreetStreaming(client files.GreetServiceClient) {
 	go func() {
 		for {
 			resp, err := stream.Recv()
-			if err != nil {
+			if err == io.EOF {
+				log.Println(err.Error())
+				waitC <- 0
+				return
+			} else if err != nil {
 				log.Println("Error in receiving data : " + err.Error())
-				continue
-			} else if err == io.EOF {
-				log.Println("Error in receiving data : " + err.Error())
-				close(waitC)
+				waitC <- 0
 				return
 			} else {
 				fmt.Println(resp.GetResult())
@@ -233,5 +236,63 @@ func biDirectionalGreetStreaming(client files.GreetServiceClient) {
 		}
 	}()
 
-	<-waitC
+	for result := range waitC {
+		if result == 0 {
+			break
+		}
+	}
+	return
+}
+
+func evenOrOddStreaming(client files.SumServiceClient) {
+	stream, err := client.EvenOrOdd(context.Background())
+	if err != nil {
+		log.Fatalln(err.Error() + "Occurred in getting stream for client")
+		return
+	}
+	var requests = []int32{12, 345, 567, 69, 42, 556, 245, 6789, 123}
+	reqS := &files.NumReq{ReqNum: -1}
+	waitC := make(chan int)
+
+	go func() {
+		for _, req := range requests {
+			reqS.ReqNum = req
+			err := stream.Send(reqS)
+			if err != nil {
+				log.Println(err.Error() + "occurred in sending requests")
+				return
+			}
+			time.Sleep(time.Millisecond * 100)
+		}
+		err := stream.CloseSend()
+		if err != nil {
+			log.Println(err.Error() + " ;Error in closing the stream")
+			return
+		}
+		return
+	}()
+
+	go func() {
+		for {
+			resp, err := stream.Recv()
+			if err == io.EOF {
+				log.Println(err)
+				waitC <- 0
+				return
+			} else if err != nil {
+				log.Println(err.Error())
+				waitC <- 0
+				return
+			}
+			fmt.Println(resp.RespNum)
+		}
+	}()
+
+	for signal := range waitC {
+		if signal == 0 {
+			break
+		}
+	}
+
+	return
 }

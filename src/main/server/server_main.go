@@ -17,24 +17,53 @@ type GreetService struct{}
 
 type SumService struct{}
 
+// EvenOrOdd for recognizing the request number is even or odd
+func (ss *SumService) EvenOrOdd(stream files.SumService_EvenOrOddServer) error {
+	resp := &files.NumResp{RespNum: "odd"}
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			log.Println(err.Error())
+			return err
+		} else if err != nil {
+			log.Println(err.Error() + " occurred in EvenOdd API")
+			return err
+		}
+
+		if (req.GetReqNum() % 2) == 1 {
+			err := stream.Send(resp)
+			if err != nil {
+				log.Println(err.Error() + "Occurred in sending the response")
+				return err
+			}
+		} else {
+			resp.RespNum = "even"
+			err := stream.Send(resp)
+			if err != nil {
+				log.Println(err.Error() + "Occurred in sending the response")
+				return err
+			}
+		}
+	}
+}
+
 // GreetEveryone use for greeting to the client requests
 func (gs *GreetService) GreetEveryone(stream files.GreetService_GreetEveryoneServer) error {
 	for {
 		req, err := stream.Recv()
-		if err != nil {
+		if err == io.EOF {
+			return err
+		} else if err != nil {
 			log.Println("Error in receiving the req : " + err.Error())
 			return err
-		} else if err == io.EOF {
-			return err
 		} else {
-			firstName := req.GetGreeting().FirstName
+			firstName := req.GetGreeting().GetFirstName()
 			result := "Hello " + firstName + " !"
 			resp := &files.GreetEveryoneResponse{Result: result}
 			sendErr := stream.Send(resp)
 			if sendErr != nil {
 				log.Println("Error during send response to the server : " + err.Error())
-				//return sendErr
-				continue
+				return sendErr
 			}
 		}
 	}
