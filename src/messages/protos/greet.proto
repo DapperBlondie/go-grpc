@@ -32,8 +32,21 @@ message LongGreetResponse {
   string result=1;
 }
 
+message GreetEveryoneRequest {
+  Greeting greeting=1;
+}
+
+message GreetEveryoneResponse {
+  string result=1;
+}
+
 service GreetService{
+  // Greet is a unary API for greeting to a request
   rpc Greet(GreetingRequest) returns (GreetingResponse) {};
+  // GreetManyTimes is server streaming API for greet multiple times to client request
   rpc GreetManyTimes(GreetingManyTimeRequest) returns (stream GreetingManyTimesResponse) {};
+  // LongGreet is a client streaming API for implementing a long greet to server
   rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
+  // GreetEveryone is bi-directional streaming API for handling the multiple greet asynchronously
+  rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
 }

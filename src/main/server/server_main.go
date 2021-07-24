@@ -17,17 +17,40 @@ type GreetService struct{}
 
 type SumService struct{}
 
+// GreetEveryone use for greeting to the client requests
+func (gs *GreetService) GreetEveryone(stream files.GreetService_GreetEveryoneServer) error {
+	for {
+		req, err := stream.Recv()
+		if err != nil {
+			log.Println("Error in receiving the req : " + err.Error())
+			return err
+		} else if err == io.EOF {
+			return err
+		} else {
+			firstName := req.GetGreeting().FirstName
+			result := "Hello " + firstName + " !"
+			resp := &files.GreetEveryoneResponse{Result: result}
+			sendErr := stream.Send(resp)
+			if sendErr != nil {
+				log.Println("Error during send response to the server : " + err.Error())
+				//return sendErr
+				continue
+			}
+		}
+	}
+}
+
 // AverageStreamingResult use for computing average of int32 client streaming
 func (ss *SumService) AverageStreamingResult(stream files.SumService_AverageStreamingResultServer) error {
-	var counter int32 = 0.0
+	var counter int32 = 0
 	var sum int32 = 0
+
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {
 			log.Println("Error in getting the request in Average Stream : " + err.Error())
 			resp := &files.AverageResultResponse{Average: float32(sum) / float32(counter)}
 			err := stream.SendAndClose(resp)
-			//log.Println("Error in Average Streaming : " + err.Error()) // Daemon statement
 			return err
 		} else if err != nil {
 			log.Println("Error in Average Streaming : " + err.Error())
@@ -43,6 +66,7 @@ func (ss *SumService) AverageStreamingResult(stream files.SumService_AverageStre
 func (gs *GreetService) LongGreet(stream files.GreetService_LongGreetServer) error {
 	var counter int = 0
 	var name string = ""
+
 	for {
 		req, err := stream.Recv()
 		if err == io.EOF {

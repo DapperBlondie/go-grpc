@@ -39,6 +39,7 @@ func runClient() error {
 	serverStreamingSum(sumClient)
 	clientStreamingGreeting(client)
 	clientStreamingAverage(sumClient)
+	biDirectionalGreetStreaming(client)
 
 	return nil
 }
@@ -175,4 +176,62 @@ func unaryGreeting(client files.GreetServiceClient) {
 
 	fmt.Println("Response msg : " + resp.GetResult())
 	return
+}
+
+func biDirectionalGreetStreaming(client files.GreetServiceClient) {
+	stream, err := client.GreetEveryone(context.Background())
+	if err != nil {
+		log.Println("Error in getting the stream from client : " + err.Error())
+		return
+	}
+
+	var requests []*files.GreetEveryoneRequest
+	requests = append(requests, &files.GreetEveryoneRequest{Greeting: &files.Greeting{
+		FirstName: "Dexter",
+		LastName:  "Deshawn",
+	}})
+	requests = append(requests, &files.GreetEveryoneRequest{Greeting: &files.Greeting{
+		FirstName: "Tony",
+		LastName:  "McKay",
+	}})
+	requests = append(requests, &files.GreetEveryoneRequest{Greeting: &files.Greeting{
+		FirstName: "Johnny",
+		LastName:  "SilverHand",
+	}})
+
+	waitC := make(chan int)
+
+	go func() {
+		for _, req := range requests {
+			err := stream.Send(req)
+			if err != nil {
+				log.Println("Error in sending request : " + err.Error())
+				continue
+			}
+		}
+		err := stream.CloseSend()
+		if err != nil {
+			log.Print("Error in closing the stream : " + err.Error())
+			return
+		}
+		return
+	}()
+
+	go func() {
+		for {
+			resp, err := stream.Recv()
+			if err != nil {
+				log.Println("Error in receiving data : " + err.Error())
+				continue
+			} else if err == io.EOF {
+				log.Println("Error in receiving data : " + err.Error())
+				close(waitC)
+				return
+			} else {
+				fmt.Println(resp.GetResult())
+			}
+		}
+	}()
+
+	<-waitC
 }
