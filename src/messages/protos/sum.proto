@@ -28,9 +28,20 @@ message NumResp {
   string resp_num=1;
 }
 
+message SquareRootRequest {
+  int32 number=1;
+}
+
+message SquareRootResponse {
+  double root_number=1;
+}
+
 service SumService {
   rpc GetSumResult(SumRequest) returns (SumResponse) {};
   rpc GetStreamingSumResult(SumRequest) returns (stream SumResponse) {};
   rpc AverageStreamingResult(stream NumberRequest) returns (AverageResultResponse) {};
   rpc EvenOrOdd(stream NumReq) returns (stream NumResp) {};
+  // this RPC will throw exception if we sent an negative number
+  // error type is INVALID_ARGUMENT
+  rpc SquareRoot(SquareRootRequest) returns (SquareRootResponse) {};
 }

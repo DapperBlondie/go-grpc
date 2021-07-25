@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/DapperBlondie/go-grpc/src/messages/files"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/status"
 	"io"
 	"log"
 	"strconv"
@@ -30,17 +31,19 @@ func runClient() error {
 	}
 
 	log.Println("rpc Client dialed localhost:50051 ...")
-	client := files.NewGreetServiceClient(conn)
+	//client := files.NewGreetServiceClient(conn)
 	sumClient := files.NewSumServiceClient(conn)
 
-	unaryGreeting(client)
+	/*unaryGreeting(client)
 	unarySum(sumClient)
 	serverStreamingGreeting(client)
 	serverStreamingSum(sumClient)
 	clientStreamingGreeting(client)
 	clientStreamingAverage(sumClient)
 	biDirectionalGreetStreaming(client)
-	evenOrOddStreaming(sumClient)
+	evenOrOddStreaming(sumClient)*/
+	errorInvalidArgumentInUnaryAPI(sumClient, 12)
+	errorInvalidArgumentInUnaryAPI(sumClient, -10)
 
 	return nil
 }
@@ -294,5 +297,22 @@ func evenOrOddStreaming(client files.SumServiceClient) {
 		}
 	}
 
+	return
+}
+
+func errorInvalidArgumentInUnaryAPI(client files.SumServiceClient, reqNumber int32) {
+	req := &files.SquareRootRequest{Number: reqNumber}
+	resp, err := client.SquareRoot(context.Background(), req)
+	if err != nil {
+		respErr, ok := status.FromError(err)
+		if ok {
+			log.Println(respErr.Code().String() + " : " + respErr.Message())
+			return
+		} else {
+			log.Fatalln("Unexpected error occurred ! " + err.Error())
+			return
+		}
+	}
+	fmt.Println(fmt.Sprintf("The result of sqrt : %f\n", resp.GetRootNumber()))
 	return
 }

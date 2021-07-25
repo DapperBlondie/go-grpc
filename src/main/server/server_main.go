@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"github.com/DapperBlondie/go-grpc/src/messages/files"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"io"
 	"log"
+	"math"
 	"net"
 	"strconv"
 	"time"
@@ -16,6 +19,19 @@ import (
 type GreetService struct{}
 
 type SumService struct{}
+
+func (ss *SumService) SquareRoot(ctx context.Context, r *files.SquareRootRequest) (*files.SquareRootResponse, error) {
+	fmt.Println("Get the number from request")
+	number := r.GetNumber()
+	if number < 0 {
+		// This that error we will send to the client InvalidArgument
+		return nil, status.Errorf(codes.InvalidArgument,
+			fmt.Sprintf("%v is a negative number you sent", number))
+	} else {
+		resp := &files.SquareRootResponse{RootNumber: math.Sqrt(float64(number))}
+		return resp, nil
+	}
+}
 
 // EvenOrOdd for recognizing the request number is even or odd
 func (ss *SumService) EvenOrOdd(stream files.SumService_EvenOrOddServer) error {
