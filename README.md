@@ -18,3 +18,5 @@ rpc GetSumResult(SumRequest) returns (SumResponse) {};
 rpc GetStreamingSumResult(SumRequest) returns (stream SumResponse) {};
 
 rpc AverageStreamingResult(stream NumberRequest) returns (AverageResultResponse) {};
+
+rpc SquareRoot(SquareRootRequest) returns (SquareRootResponse) {};
