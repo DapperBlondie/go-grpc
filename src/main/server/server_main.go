@@ -15,11 +15,32 @@ import (
 	"time"
 )
 
-// GreetService our structure that implemented our rpc
+// GreetService this structure implement our RPC services
 type GreetService struct{}
 
+// SumService this structure implement our RPC services
 type SumService struct{}
 
+// GreetWithDeadline use for implementing deadline exceeded from client
+func (gs *GreetService) GreetWithDeadline(ctx context.Context, request *files.GreetWithDeadlineRequest) (*files.GreetWithDeadlineResponse, error) {
+	for i := 0; i < 3; i += 1 {
+		if ctx.Err() == context.Canceled {
+			log.Println("The client cancel the request !")
+			return nil, status.Error(codes.Canceled, "The client canceled the request !")
+		}
+		if ctx.Err() == context.DeadlineExceeded {
+			log.Println("The deadline exceeded the request !")
+			return nil, status.Error(codes.DeadlineExceeded, "The deadline exceeded the request !")
+		}
+		time.Sleep(time.Second * 1)
+	}
+
+	result := "Hello, " + request.GetGreet().GetFirstName() + ", " + request.GetGreet().GetLastName()
+	res := &files.GreetWithDeadlineResponse{Result: result}
+	return res, nil
+}
+
+// SquareRoot use for implementing an error that name is InvalidArgument for a Unary API
 func (ss *SumService) SquareRoot(ctx context.Context, r *files.SquareRootRequest) (*files.SquareRootResponse, error) {
 	fmt.Println("Get the number from request")
 	number := r.GetNumber()

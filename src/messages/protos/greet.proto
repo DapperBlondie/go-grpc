@@ -40,6 +40,14 @@ message GreetEveryoneResponse {
   string result=1;
 }
 
+message GreetWithDeadlineRequest {
+  Greeting greet=1;
+}
+
+message GreetWithDeadlineResponse {
+  string result=1;
+}
+
 service GreetService{
   // Greet is a unary API for greeting to a request
   rpc Greet(GreetingRequest) returns (GreetingResponse) {};
@@ -49,4 +57,6 @@ service GreetService{
   rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
   // GreetEveryone is bi-directional streaming API for handling the multiple greet asynchronously
   rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
+  // GreetWithDeadline is a unary API for implementing
+  rpc GreetWithDeadline(GreetWithDeadlineRequest) returns (GreetWithDeadlineResponse) {};
 }

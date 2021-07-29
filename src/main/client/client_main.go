@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/DapperBlondie/go-grpc/src/messages/files"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"io"
 	"log"
@@ -31,19 +32,20 @@ func runClient() error {
 	}
 
 	log.Println("rpc Client dialed localhost:50051 ...")
-	//client := files.NewGreetServiceClient(conn)
-	sumClient := files.NewSumServiceClient(conn)
+	client := files.NewGreetServiceClient(conn)
+	//sumClient := files.NewSumServiceClient(conn)
 
-	/*unaryGreeting(client)
-	unarySum(sumClient)
-	serverStreamingGreeting(client)
-	serverStreamingSum(sumClient)
-	clientStreamingGreeting(client)
-	clientStreamingAverage(sumClient)
-	biDirectionalGreetStreaming(client)
-	evenOrOddStreaming(sumClient)*/
-	errorInvalidArgumentInUnaryAPI(sumClient, 12)
-	errorInvalidArgumentInUnaryAPI(sumClient, -10)
+	//unaryGreeting(client)
+	//unarySum(sumClient)
+	//serverStreamingGreeting(client)
+	//serverStreamingSum(sumClient)
+	//clientStreamingGreeting(client)
+	//clientStreamingAverage(sumClient)
+	//biDirectionalGreetStreaming(client)
+	//evenOrOddStreaming(sumClient)
+	//errorInvalidArgumentInUnaryAPI(sumClient, 12)
+	//errorInvalidArgumentInUnaryAPI(sumClient, -10)
+	withDeadlineGreetUnary(client)
 
 	return nil
 }
@@ -314,5 +316,36 @@ func errorInvalidArgumentInUnaryAPI(client files.SumServiceClient, reqNumber int
 		}
 	}
 	fmt.Println(fmt.Sprintf("The result of sqrt : %f\n", resp.GetRootNumber()))
+	return
+}
+
+func withDeadlineGreetUnary(client files.GreetServiceClient) {
+	req := &files.GreetWithDeadlineRequest{Greet: &files.Greeting{
+		FirstName: "Johnny",
+		LastName:  "SilverHand",
+	}}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancel()
+
+	resp, err := client.GreetWithDeadline(ctx, req)
+	if err != nil {
+		statusErr, ok := status.FromError(err)
+		if ok {
+			if statusErr.Code() == codes.DeadlineExceeded {
+				log.Println(statusErr.Err().Error() + " : " + statusErr.Code().String())
+				return
+			} else {
+				log.Println(statusErr.Err().Error())
+				return
+			}
+		} else {
+			log.Fatalln(err.Error())
+			return
+		}
+		return
+	}
+
+	log.Println("The result of greeting to the server : " + resp.GetResult())
 	return
 }
