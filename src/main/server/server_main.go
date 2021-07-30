@@ -6,6 +6,7 @@ import (
 	"github.com/DapperBlondie/go-grpc/src/messages/files"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
 	"io"
 	"log"
@@ -230,6 +231,7 @@ func runServer() error {
 	srv := grpc.NewServer()
 	files.RegisterGreetServiceServer(srv, &GreetService{})
 	files.RegisterSumServiceServer(srv, &SumService{})
+	reflection.Register(srv)
 
 	log.Println("rpc Server listening on localhost:50051 ...")
 	err = srv.Serve(listener)
