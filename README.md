@@ -28,3 +28,9 @@ rpc GetStreamingSumResult(SumRequest) returns (stream SumResponse) {};
 rpc AverageStreamingResult(stream NumberRequest) returns (AverageResultResponse) {};
 
 rpc SquareRoot(SquareRootRequest) returns (SquareRootResponse) {};
+
+***
+
+## Evans CLI as our gRPC Client
+
+Use Evans CLI tools for your gRPC client
