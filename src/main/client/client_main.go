@@ -325,7 +325,7 @@ func withDeadlineGreetUnary(client files.GreetServiceClient) {
 		LastName:  "SilverHand",
 	}}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 	defer cancel()
 
 	resp, err := client.GreetWithDeadline(ctx, req)
